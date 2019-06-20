@@ -1,0 +1,241 @@
+LAMMPS (11 Aug 2017)
+# settings
+
+units		lj
+dimension	3
+boundary 	p f p
+atom_style	atomic
+#processors      2 2 2
+
+region		box block 0 10 0 19.0 0 10      #create total region
+create_box      3 box                                #create simulation box
+Created orthogonal box = (0 0 0) to (10 19 10)
+  2 by 2 by 2 MPI processor grid
+
+region		noise_region block 0 10 4 16 0 10 units box     #create wall region
+create_atoms	1 random 800 999999 noise_region  	    #create noise atoms 750
+Created 800 atoms
+
+#Create walls
+lattice		sc 1.
+Lattice spacing in x,y,z = 1 1 1
+region		wall_south block 0 10 0 3.0 0 10 units box      #create wall region
+create_atoms	2 region wall_south           #create atom wall_down
+Created 400 atoms
+
+region		wall_north block 0 10 16.0 19.0 0 10 units box     #create wall region
+create_atoms	3 region wall_north           #create atom wall_up
+Created 300 atoms
+
+mass		1 1.0
+mass		2 1.0
+mass		3 1.0
+#==========================================================================
+#for argon
+variable	t equal 1.0
+variable	rc equal 3.5
+variable	srate equal 1
+#==========================================================================
+
+# default value
+timestep	0.005
+
+# check neighbor parameters
+neigh_modify	delay 1 every 1
+
+pair_style      lj/cut ${rc}
+pair_style      lj/cut 3.5
+#pair_coeff      * * 1.0 1.0 4.5
+
+
+pair_coeff      1 1 1.0 1.0 3.5
+
+pair_coeff      1 2 0.6 1.0 3.5
+pair_coeff      1 3 0.6 1.0 3.5
+
+pair_coeff      2 2 1.0 1.0 3.5
+pair_coeff      2 3 1.0 1.0 3.5
+pair_coeff      3 3 1.0 1.0 3.5
+
+#=======================================================
+group	        flow type 1
+800 atoms in group flow
+group 		upper type 2
+400 atoms in group upper
+group 		lower type 3
+300 atoms in group lower
+group           wall union upper lower
+700 atoms in group wall
+
+velocity        flow create 1.0 11111 dist gaussian
+velocity        flow scale 1.0
+
+velocity	wall set 0.0 0.0 0.0 units box
+fix		wall_setforce wall setforce 0.0 0.0 0.0
+
+
+#Set dynamical groups for local thermostatting
+
+region 		Region0 block EDGE EDGE 3.0 4.0 EDGE EDGE
+group 		group0 dynamic flow region Region0 every 1
+dynamic group group0 defined
+compute 	myTemp0 group0 temp/partial 0 1 1
+fix         	nh0 group0 nvt temp 1.0 1.0 1
+fix_modify 	nh0 temp myTemp0
+WARNING: Temperature for fix modify is not for group all (../fix_nh.cpp:1395)
+
+region 		Region1 block EDGE EDGE 4.0 5.0 EDGE EDGE
+group 		group1 dynamic flow region Region1 every 1
+dynamic group group1 defined
+compute 	myTemp1 group1 temp/partial 0 1 1
+fix         	nh1 group1 nvt temp 1.0 1.0 1
+fix_modify 	nh1 temp myTemp1
+WARNING: Temperature for fix modify is not for group all (../fix_nh.cpp:1395)
+
+region 		Region2 block EDGE EDGE 5.0 6.0 EDGE EDGE
+group 		group2 dynamic flow region Region2 every 1
+dynamic group group2 defined
+compute 	myTemp2 group2 temp/partial 0 1 1
+fix         	nh2 group2 nvt temp 1.0 1.0 1
+fix_modify 	nh2 temp myTemp2
+WARNING: Temperature for fix modify is not for group all (../fix_nh.cpp:1395)
+
+region 		Region3 block EDGE EDGE 6.0 7.0 EDGE EDGE
+group 		group3 dynamic flow region Region3 every 1
+dynamic group group3 defined
+compute 	myTemp3 group3 temp/partial 0 1 1
+fix         	nh3 group3 nvt temp 1.0 1.0 1
+fix_modify 	nh3 temp myTemp3
+WARNING: Temperature for fix modify is not for group all (../fix_nh.cpp:1395)
+
+region 		Region4 block EDGE EDGE 7.0 8.0 EDGE EDGE
+group 		group4 dynamic flow region Region4 every 1
+dynamic group group4 defined
+compute 	myTemp4 group4 temp/partial 0 1 1
+fix         	nh4 group4 nvt temp 1.0 1.0 1
+fix_modify 	nh4 temp myTemp4
+WARNING: Temperature for fix modify is not for group all (../fix_nh.cpp:1395)
+
+
+region 		Region5 block EDGE EDGE 8.0 9.0 EDGE EDGE
+group 		group5 dynamic flow region Region5 every 1
+dynamic group group5 defined
+compute 	myTemp5 group5 temp/partial 0 1 1
+fix         	nh5 group5 nvt temp 1.0 1.0 1
+fix_modify 	nh5 temp myTemp5
+WARNING: Temperature for fix modify is not for group all (../fix_nh.cpp:1395)
+
+
+region 		Region6 block EDGE EDGE 9.0 10.0 EDGE EDGE
+group 		group6 dynamic flow region Region6 every 1
+dynamic group group6 defined
+compute 	myTemp6 group6 temp/partial 0 1 1
+fix         	nh6 group6 nvt temp 1.0 1.0 1
+fix_modify 	nh6 temp myTemp6
+WARNING: Temperature for fix modify is not for group all (../fix_nh.cpp:1395)
+
+region 		Region7 block EDGE EDGE 10.0 11.0 EDGE EDGE
+group 		group7 dynamic flow region Region7 every 1
+dynamic group group7 defined
+compute 	myTemp7 group7 temp/partial 0 1 1
+fix         	nh7 group7 nvt temp 1.0 1.0 1
+fix_modify 	nh7 temp myTemp7
+WARNING: Temperature for fix modify is not for group all (../fix_nh.cpp:1395)
+
+region 		Region8 block EDGE EDGE 11.0 12.0 EDGE EDGE
+group 		group8 dynamic flow region Region8 every 1
+dynamic group group8 defined
+compute 	myTemp8 group8 temp/partial 0 1 1
+fix         	nh8 group8 nvt temp 1.0 1.0 1
+fix_modify 	nh8 temp myTemp8
+WARNING: Temperature for fix modify is not for group all (../fix_nh.cpp:1395)
+
+region 		Region9 block EDGE EDGE 12.0 13.0 EDGE EDGE
+group 		group9 dynamic flow region Region9 every 1
+dynamic group group9 defined
+compute 	myTemp9 group9 temp/partial 0 1 1
+fix         	nh9 group9 nvt temp 1.0 1.0 1
+fix_modify 	nh9 temp myTemp9
+WARNING: Temperature for fix modify is not for group all (../fix_nh.cpp:1395)
+
+region 		Region10 block EDGE EDGE 13.0 14.0 EDGE EDGE
+group 		group10 dynamic flow region Region10 every 1
+dynamic group group10 defined
+compute 	myTemp10 group10 temp/partial 0 1 1
+fix         	nh10 group10 nvt temp 1.0 1.0 1
+fix_modify 	nh10 temp myTemp10
+WARNING: Temperature for fix modify is not for group all (../fix_nh.cpp:1395)
+
+region 		Region11 block EDGE EDGE 14.0 15.0 EDGE EDGE
+group 		group11 dynamic flow region Region11 every 1
+dynamic group group11 defined
+compute 	myTemp11 group11 temp/partial 0 1 1
+fix         	nh11 group11 nvt temp 1.0 1.0 1
+fix_modify 	nh11 temp myTemp11
+WARNING: Temperature for fix modify is not for group all (../fix_nh.cpp:1395)
+
+region 		Region12 block EDGE EDGE 15.0 16.0 EDGE EDGE
+group 		group12 dynamic flow region Region12 every 1
+dynamic group group12 defined
+compute 	myTemp12 group12 temp/partial 0 1 1
+fix         	nh12 group12 nvt temp 1.0 1.0 1
+fix_modify 	nh12 temp myTemp12
+WARNING: Temperature for fix modify is not for group all (../fix_nh.cpp:1395)
+
+
+# Walls integrator
+fix 		wall_integrator wall nve
+#==========================================================
+# Minimizing potential energy
+minimize 1.0e-8 1.0e-8 10000 10000
+WARNING: Using 'neigh_modify every 1 delay 0 check yes' setting during minimization (../min.cpp:168)
+Neighbor list info ...
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 3.8
+  ghost atom cutoff = 3.8
+  binsize = 1.9, bins = 6 10 6
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/cut, perpetual
+      attributes: half, newton on
+      pair build: half/bin/atomonly/newton
+      stencil: half/bin/3d/newton
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 4.244 | 4.246 | 4.247 Mbytes
+Step Temp E_pair E_mol TotEng Press 
+       0   0.53302201 4.9786673e+10            0 4.9786673e+10 1.572211e+11 
+    1281   0.53302201   -5.1406275            0   -4.3416275    6.6396405 
+Loop time of 16.4515 on 8 procs for 1281 steps with 1500 atoms
+
+13.9% CPU use with 8 MPI tasks x no OpenMP threads
+
+Minimization stats:
+  Stopping criterion = linesearch alpha is zero
+  Energy initial, next-to-last, final = 
+         49786672704.1     -5.14062745741     -5.14062745741
+  Force two-norm initial, final = 1.46212e+16 4.66531
+  Force max component initial, final = 1.00834e+16 0.810272
+  Final line search alpha, max atom move = 7.06749e-07 5.72659e-07
+  Iterations, force evaluations = 1281 2572
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.89364    | 1.3489     | 1.8712     |  25.0 |  8.20
+Neigh   | 0.10171    | 0.14348    | 0.18819    |   6.6 |  0.87
+Comm    | 10.054     | 10.788     | 12.048     |  21.5 | 65.57
+Output  | 0          | 0          | 0          |   0.0 |  0.00
+Modify  | 0.0029287  | 0.0034413  | 0.0041101  |   0.6 |  0.02
+Other   |            | 4.168      |            |       | 25.33
+
+Nlocal:    187.5 ave 229 max 138 min
+Histogram: 1 1 0 0 3 0 0 1 0 2
+Nghost:    1390.75 ave 1573 max 1210 min
+Histogram: 1 1 0 1 1 1 1 0 1 1
+Neighs:    17170.2 ave 24110 max 10796 min
+Histogram: 1 1 0 2 1 0 1 0 0 2
+
+Total # of neighbors = 137362
+Ave neighs/atom = 91.5747
+Neighbor list builds = 326
+Dangerous builds = 3
